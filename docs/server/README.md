@@ -81,8 +81,15 @@ sudo apt dist-upgrade
 
 # Networking
 
+Disable power management:
 ```
-sudo apt isntall dnsmasq hostapd
+sudo touch /etc/pm/sleep.d/60_wpa_supplicant
+sudo chmod 644 /etc/pm/sleep.d/60_wpa_supplicant # Instructions said no exec flag
+```
+Install dnsmasq, hostapd
+
+```
+sudo apt install dnsmasq hostapd
 ```
 
 TODO: This section needs to be fleshed out
@@ -112,7 +119,7 @@ bind-interfaces
 server=8.8.8.8
 domain-needed
 bogus-priv
-dhcp-range=192.168.50.50,192.168.10.150,12h
+dhcp-range=192.168.51.0,192.168.51.255,12h
 ```
 ===============================
 This path
@@ -188,19 +195,22 @@ iface lo inet loopback
 
 allow-hotplug ap0
 iface ap0 inet static
-    address 192.168.50.1
+    address 192.168.51.1
     netmask 255.255.255.0
     hostapd /etc/hostapd/hostapd.conf
 
 allow-hotplug wlan0
-iface wlan0 inet manual
+iface wlan0 inet dhcp
     wpa-roam /etc/wpa_supplicant/wpa_supplicant.conf
-iface AP1 inet dhcp
-iface AP2 inet dhcp
+
+
+wireless-power off
 ```
 ===============================
 
-Routing?
+--Routing?--
+
+This section is deprecated.
 
 ```
 $ sudo sysctl -w net.ipv4.ip_forward=1
@@ -211,6 +221,8 @@ $ sudo systemctl restart dnsmasq
 ===============================
 
 Janky Script
+
+This section is deprecated
 
 ```
 pi@raspberrypi:~$ cat ./start-ap-managed-wifi.sh
