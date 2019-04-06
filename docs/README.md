@@ -41,9 +41,9 @@ MQTT is a protocol for exchanging data between a bunch of clients (the esp_8266)
 where the ```&``` allows you to continue to use that terminal even though it has an open, running process (Firefox).
 
 
-# Data Server Software [link](/server/)
+# Data Server Software [link](sparks-bot/server)
 
-## interface [link](/dashboard/)
+## interface [link](sparks-bot/dashboard/)
 
 This folder contains the html, css, and javascript code that makes a website in a browser that can control your robot. It currently supports, up, down, left, and right, buttons that then send json requests to the hard-coded ip address in the script.js document. Currently, it is set to 192.168.50.138. This can be run on any computer that is connected to the same network as the robot. Style.css is the stylesheet, and demo.html is the webpage that you open in the browser. Either double-click that file or open it in firefox using the command line.
 ```
