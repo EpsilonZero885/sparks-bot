@@ -1,8 +1,8 @@
 $( document ).ready(function(){
 
     // Device
-    var address = "192.168.50.147";
-    var device = new Device(address);
+    var address = "172.30.0.185";
+    var device = new Device(address);w
     console.log(device);
 
     // Buttons
@@ -33,6 +33,13 @@ $( document ).ready(function(){
     $('#backward').mouseup(function() {
       device.callFunction("stop");
     });
+
+    $('#dance').mousedown(function() {
+      device.callFunction("dance");
+    });
+   // $('#dance').mouseup(function() {
+    //  device.callFunction("stop");
+    //});
     });
 
 
