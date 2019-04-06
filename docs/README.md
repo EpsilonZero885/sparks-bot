@@ -34,13 +34,6 @@ Adafruit has a variety of boards with the 'Feather' name. These are boards that 
 
 This is the software to build a web-controlled robot using the esp8266. It supports the current configuration of the esp-8266 board driving the Feather DC motor board
 
-## mqtt_esp8266
-
-MQTT is a protocol for exchanging data between a bunch of clients (the esp_8266) and your central server (the raspberry pi).
-
-where the ```&``` allows you to continue to use that terminal even though it has an open, running process (Firefox).
-
-
 # Data Server Software [link](sparks-bot/server)
 
 ## interface [link](sparks-bot/dashboard/)
@@ -49,6 +42,3 @@ This folder contains the html, css, and javascript code that makes a website in 
 ```
 firefox demo.html &
 ```
-
-
-T
