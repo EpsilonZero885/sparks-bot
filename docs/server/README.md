@@ -14,8 +14,7 @@ Please consult an [outside source](https://www.raspberrypi.org/documentation/ins
 Once you have your sd card with raspbian, open the sd card in the file explorer and add a file called 'wpa_supplicant.conf'. Copy and paste the following into it.
 ```
 country=US
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-update_config=1
+ctrl_interface=DIR=/var/run/wpa_supplicant
 network={
 	ssid="MyWiFiNetwork"
 	psk="aVeryStrongPassword"
@@ -34,7 +33,7 @@ Finally, open the ```cmdline.txt```  Each parameter is seperated by a single spa
 Then, if you are on Windows install PuTTY. It allows you to talk to Unix/Linux computers. Once that is installed, you should be able to ssh into the hostname 'raspberry pi' using port '22' and the ssh protocol. The command is:
 
 [Source](https://gist.github.com/gbaman/975e2db164b3ca2b51ae11e45e8fd40a)
- 
+
 # Connecting and First Time Setup
 
 ```
@@ -81,8 +80,15 @@ sudo apt dist-upgrade
 
 # Networking
 
+Disable power management:
 ```
-sudo apt isntall dnsmasq hostapd
+sudo touch /etc/pm/sleep.d/60_wpa_supplicant
+sudo chmod 644 /etc/pm/sleep.d/60_wpa_supplicant # Instructions said no exec flag
+```
+Install dnsmasq, hostapd
+
+```
+sudo apt install dnsmasq hostapd
 ```
 
 TODO: This section needs to be fleshed out
@@ -91,28 +97,11 @@ TODO: This section needs to be fleshed out
 ===============================
 This path
 ```
-/etc/udev/rules.d/70-persistent-net.rules
-```
-The content
-```
-SUBSYSTEM=="ieee80211", ACTION=="add|change", ATTR{macaddress}=="b8:27:eb:ff:ff:ff", KERNEL=="phy0", \
-  RUN+="/sbin/iw phy phy0 interface add ap0 type __ap", \
-  RUN+="/bin/ip link set ap0 address b8:27:eb:ff:ff:ff"
-```
-===============================
-This path
-```
 /etc/dnsmasq.conf
 ```
 The content
 ```
-interface=lo,ap0
-no-dhcp-interface=lo,wlan0
-bind-interfaces
-server=8.8.8.8
-domain-needed
-bogus-priv
-dhcp-range=192.168.50.50,192.168.10.150,12h
+
 ```
 ===============================
 This path
@@ -126,14 +115,14 @@ ctrl_interface_group=0
 interface=ap0
 driver=nl80211
 ssid=sparks-net
-hw_mode=g
-channel=11
+channel=auto
 wmm_enabled=0
 macaddr_acl=0
 auth_algs=1
 wpa=2
 wpa_passphrase=sciencerules!
 wpa_key_mgmt=WPA-PSK
+ignore_broadcast_ssid = 0
 wpa_pairwise=TKIP CCMP
 rsn_pairwise=CCMP
 ```
@@ -155,13 +144,12 @@ This path
 The content
 ```
 country=US
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+ctrl_interface=DIR=/var/run/wpa_supplicant #GROUP=netdev
 update_config=1
 
 network={
     ssid="YourSSID1"
     psk="YourPassphrase1"
-    id_str="AP1"
 }
 ```
 
@@ -187,41 +175,12 @@ auto wlan0
 iface lo inet loopback
 
 allow-hotplug ap0
-iface ap0 inet static
-    address 192.168.50.1
-    netmask 255.255.255.0
-    hostapd /etc/hostapd/hostapd.conf
-
 allow-hotplug wlan0
-iface wlan0 inet manual
-    wpa-roam /etc/wpa_supplicant/wpa_supplicant.conf
-iface AP1 inet dhcp
-iface AP2 inet dhcp
-```
-===============================
 
-Routing?
 
-```
-$ sudo sysctl -w net.ipv4.ip_forward=1
-$ sudo iptables -t nat -A POSTROUTING -s 192.168.50.0/24 ! -d 192.168.50.0/24 -j MASQUERADE
-$ sudo systemctl restart dnsmasq
-```
+iface wlan0 inet dhcp
+wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
 
-===============================
-
-Janky Script
-
-```
-pi@raspberrypi:~$ cat ./start-ap-managed-wifi.sh
-#!/bin/bash
-sleep 30
-sudo ifdown --force wlan0 && sudo ifdown --force ap0 && sudo ifup ap0 && sudo ifup wlan0
-sudo sysctl -w net.ipv4.ip_forward=1
-sudo iptables -t nat -A POSTROUTING -s 192.168.10.0/24 ! -d 192.168.10.0/24 -j MASQUERADE
-sudo systemctl restart dnsmasq
-
-sudo crontab -e
 
 @reboot /home/pi/start-ap-managed-wifi.sh
 ```

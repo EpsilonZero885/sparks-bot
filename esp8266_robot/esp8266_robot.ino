@@ -95,7 +95,7 @@ int stop(String command) {
   }
 }
 
-int forward(String command) {
+int backward(String command) {
   L_MOTOR->setSpeed(200);
   R_MOTOR->setSpeed(200);
   int i;
@@ -138,7 +138,7 @@ int right(String command) {
   }
   
 }
-int backward(String command) {
+int forward(String command) {
   
   // Stop
   L_MOTOR->setSpeed(150);
@@ -152,6 +152,32 @@ int backward(String command) {
     delay(1);
     i += 1;
   }
+}
+int dance(String command) {
   
+  // Stop
+  L_MOTOR->setSpeed(150);
+  R_MOTOR->setSpeed(150);
+
+
+  int i = 0;
+  while (i < 3){
+    L_MOTOR->run( BACKWARD );
+    R_MOTOR->run( BACKWARD );
+    
+    delay(1);
+    i += 1;
+
+    
+  }
+
+  while (i < 3){
+    L_MOTOR->run( BACKWARD );
+    R_MOTOR->run( FORWARD );
+    
+    delay(1);
+    i += 1;
+  
+  }
 }
   
